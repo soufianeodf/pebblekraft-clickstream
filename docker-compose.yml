@@ -78,7 +78,7 @@ services:
     restart: always
     environment:
       DIVOLTE_KAFKA_BROKER_LIST: divolte-kafka:9092
-      DIVOLTE_KAFKA_TOPIC: tracking-avro
+      DIVOLTE_KAFKA_TOPIC: tracking
     ports:
       - 8290:8290
     depends_on:
@@ -104,6 +104,8 @@ services:
       - 9200:9200
     networks:
       - backend
+    depends_on:
+      - divolte-kafka
   kibana:
     image: docker.elastic.co/kibana/kibana:7.14.1
     container_name : kibana
@@ -116,7 +118,10 @@ services:
     depends_on:
       - elasticsearch
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.14.1
+    build:
+      context: ./logstash
+      dockerfile: Dockerfile
+    image: soufianeodf/logstash
     container_name: logstash
     hostname: logstash
     ports:
@@ -126,8 +131,6 @@ services:
       - elasticsearch
     networks:
       - backend
-    volumes:
-      - ./logstash_pipeline/:/usr/share/logstash/pipeline
 #    links:
 #      - elasticsearch:elasticsearch
 
