@@ -5,7 +5,7 @@ services:
     build:
       context: ./website
       dockerfile: Dockerfile
-    platform: linux/amd64
+#    platform: linux/amd64
     image: soufianeodf/website
     container_name: website
     networks:
@@ -67,7 +67,7 @@ services:
     build:
       context: ./divolte-collector
       dockerfile: Dockerfile
-    platform: linux/amd64
+#    platform: linux/amd64
     image: soufianeodf/divolte-collector
     container_name: docker-divolte
     networks:
