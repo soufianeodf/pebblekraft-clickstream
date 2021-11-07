@@ -131,8 +131,6 @@ services:
       - elasticsearch
     networks:
       - backend
-#    links:
-#      - elasticsearch:elasticsearch
 
 volumes:
   data01:
