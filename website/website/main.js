@@ -26,20 +26,20 @@ window.addEventListener("load", function(){
                 type: 'user_tracking', // ["user_tracking", "js_tracking"]
                 category: 'on_page_load', // ["on_page_load", "search_bar", "product_detail_view"]
 
-                user_stone_category: null,
-                user_search_bar_text: null,
+                user_pebblekraft_stone_category: null,
+                user_pebblekraft_search_bar_text: null,
 
-                user_user_id: null,
-                user_user_name: null,
-                user_company_id: null,
-                user_company_name: null,
+                user_pebblekraft_user_id: null,
+                user_pebblekraft_user_name: null,
+                user_pebblekraft_company_id: null,
+                user_pebblekraft_company_name: null,
 
-                user_product_visited_id: null,
-                user_product_visited_name: null,
-                user_product_visited_time: null,
-                user_product_visited_scroll_percentage: null,
-                user_product_visited_company_id: null,
-                user_product_visited_company_name: null,
+                user_pebblekraft_product_visited_id: null,
+                user_pebblekraft_product_visited_name: null,
+                user_pebblekraft_product_visited_time: null,
+                user_pebblekraft_product_visited_scroll_percentage: null,
+                user_pebblekraft_product_visited_company_id: null,
+                user_pebblekraft_product_visited_company_name: null,
 
                 country: window.user.country,
                 state: window.user.state,
@@ -57,12 +57,12 @@ window.addEventListener("load", function(){
                 language_name: window.user.language_name,
                 country_flag_url: window.user.country_flag_url,
 
-                js_error_msg: null,
-                js_error_level: null,
-                js_url: null,
-                js_line: null,
-                js_column: null,
-                js_is_error_caught: null,
+                js_pebblekraft_error_msg: null,
+                js_pebblekraft_error_level: null,
+                js_pebblekraft_url: null,
+                js_pebblekraft_line: null,
+                js_pebblekraft_column: null,
+                js_pebblekraft_is_error_caught: null,
             };
 
             divolte.signal('onloadEvent', payload);
