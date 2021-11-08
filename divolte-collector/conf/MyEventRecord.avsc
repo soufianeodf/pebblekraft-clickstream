@@ -7,7 +7,7 @@
     { "name": "type", "type": "string", "doc": "type of payload", "default": "unknown_type"},
     { "name": "category", "type": "string", "doc": "category of payload type", "default": "unknown_category"},
     { "name": "user_stone_category", "type": ["null", "string"], "doc": "stone category", "default": null},
-    { "name": "user_search_bar", "type": ["null", "string"], "doc": "text searched by the user in the search bar", "default": null},
+    { "name": "user_search_bar_text", "type": ["null", "string"], "doc": "text searched by the user in the search bar", "default": null},
     { "name": "user_user_id", "type": ["null", "long"], "doc": "user id", "default": null},
     { "name": "user_user_name", "type": ["null", "string"], "doc": "username", "default": null},
     { "name": "user_company_id", "type": ["null", "long"], "doc": "company id", "default": null},
