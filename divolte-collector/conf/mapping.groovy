@@ -2,7 +2,7 @@ mapping {
   map eventParameter('type') onto 'type'
   map eventParameter('category') onto 'category'
   map eventParameter('user_stone_category') onto 'user_stone_category'
-  map eventParameter('user_search_bar_text') onto 'user_search_bar'
+  map eventParameter('user_search_bar_text') onto 'user_search_bar_text'
   map { parse eventParameter('user_user_id') to int64 } onto 'user_user_id'
   map eventParameter('user_user_name') onto 'user_user_name'
   map { parse eventParameter('user_company_id') to int64 } onto 'user_company_id'
