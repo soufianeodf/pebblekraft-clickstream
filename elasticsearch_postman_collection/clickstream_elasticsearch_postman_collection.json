@@ -1,0 +1,1129 @@
+{
+	"info": {
+		"_postman_id": "dce38bd5-82ea-4cae-8a7f-b791b562e64f",
+		"name": "clickstream+elasticsearch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "overview",
+					"item": [
+						{
+							"name": "get total sessions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get distinct users",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"size\": 0,\n  \"aggs\": {\n    \"distinct_users_count\": {\n      \"cardinality\": {\n        \"field\": \"user_pebblekraft_company_id\"\n      }\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "pages per session",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"size\": 0,\n  \"aggs\": {\n    \"pages_per_session_count\": {\n      \"cardinality\": {\n        \"field\": \"location.keyword\"\n      }\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "top seen products",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"exists\": {\n            \"field\": \"user_pebblekraft_product_visited_id\"\n        }\n    },\n    \"aggs\": {\n        \"top_seen_products\": {\n            \"terms\": {\n                \"field\": \"user_pebblekraft_product_visited_id\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            },\n            \"aggs\": {\n                \"get_top_hits_document\": {\n                    \"top_hits\": {\n                        \"_source\": {\n                            \"includes\": [\n                                \"user_pebblekraft_product_visited_id\",\n                                \"user_pebblekraft_product_visited_name\"\n                            ]\n                        },\n                        \"size\": 1\n                    }\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "popular pages",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"exists\": {\n            \"field\": \"location\"\n        }\n    },\n    \"aggs\": {\n        \"pages_per_session_count\": {\n            \"terms\": {\n                \"field\": \"location.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "list of referers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"size\": 0,\n  \"query\": {\n    \"exists\": {\n        \"field\": \"referer\"\n    }\n  },\n  \"aggs\": {\n    \"referers_list\": {\n      \"terms\": {\n        \"field\": \"referer.keyword\",\n        \"order\": {\n          \"_count\": \"desc\"\n        }\n      }\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get browsers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"exists\": {\n            \"field\": \"user_agent_name\"\n        }\n    },\n    \"aggs\": {\n        \"groub_by_browsers\": {\n            \"terms\": {\n                \"field\": \"user_agent_name.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get devices",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"exists\": {\n            \"field\": \"user_agent_device_category\"\n        }\n    },\n    \"aggs\": {\n        \"groub_by_browsers\": {\n            \"terms\": {\n                \"field\": \"user_agent_device_category.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get os",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"exists\": {\n            \"field\": \"user_agent_os_vendor\"\n        }\n    },\n    \"aggs\": {\n        \"groub_by_browsers\": {\n            \"terms\": {\n                \"field\": \"user_agent_os_vendor.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get active users in last 30minutes",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"size\": 0,\n  \"query\": {\n      \"bool\": {\n          \"filter\": {\n              \"range\": {\n                  \"@timestamp\": {\n                      \"gte\": \"now-30m\"\n                  }\n              }\n          }\n      }\n  },\n  \"aggs\": {\n    \"distinct_users_count\": {\n      \"cardinality\": {\n        \"field\": \"user_pebblekraft_company_id\"\n      }\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get list of words people search for",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must_not\": {\n                \"term\": {\n                    \"user_pebblekraft_search_bar_text\": \"null\"\n                }\n            },\n            \"filter\": {\n                \"exists\": {\n                    \"field\": \"user_pebblekraft_search_bar_text\"\n                }\n            }\n        }\n    },\n    \"aggs\": {\n        \"group_by_search_bar_words\": {\n            \"terms\": {\n                \"field\": \"user_pebblekraft_search_bar_text.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get most popular countries",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"exists\": {\n            \"field\": \"country\"\n        }\n    },\n    \"aggs\": {\n        \"pages_per_session_count\": {\n            \"terms\": {\n                \"field\": \"country.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all seen products",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"filter\": [\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_company_id\"\n                    }\n                },\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_product_visited_id\"\n                    }\n                },\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_product_visited_company_id\"\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"group_by_product_id\": {\n            \"terms\": {\n                \"field\": \"user_pebblekraft_product_visited_id\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            },\n            \"aggs\": {\n                \"get_top_hits_document\": {\n                    \"top_hits\": {\n                        \"_source\": {\n                            \"includes\": [\n                                \"user_pebblekraft_product_visited_id\",\n                                \"user_pebblekraft_product_visited_name\"\n                            ]\n                        },\n                        \"size\": 1\n                    }\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "user activity over time",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "product specific",
+					"item": [
+						{
+							"name": "get product scroll depth",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get product time spent",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get total sessions",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n        \"filter\": [\n        {\n            \"exists\": {\n            \"field\": \"user_pebblekraft_user_id\"\n            }\n        },\n        {\n            \"exists\": {\n            \"field\": \"user_pebblekraft_product_visited_id\"\n            }\n        }\n        ],\n        \"must\": [\n            {\n                \"match\": {\n                    \"user_pebblekraft_product_visited_company_id\": 1\n            }\n            }\n        ]\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get distinct users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get browsers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get devices",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get os",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get active users in last 30minutes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get most popular countries",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get list of companies seeing my product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "user activity over time",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get top companies seeing this product",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Product Owner",
+			"item": [
+				{
+					"name": "overview",
+					"item": [
+						{
+							"name": "get total sessions",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n        \"filter\": [\n        {\n            \"exists\": {\n            \"field\": \"user_pebblekraft_user_id\"\n            }\n        },\n        {\n            \"exists\": {\n            \"field\": \"user_pebblekraft_product_visited_id\"\n            }\n        },\n        {\n            \"term\": {\n                \"user_pebblekraft_product_visited_company_id\": 1\n            }\n        }\n        ]\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get distinct users",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"size\": 0,\n  \"query\": {\n      \"term\": {\n          \"user_pebblekraft_product_visited_company_id\": 12\n      }\n  },\n  \"aggs\": {\n    \"distinct_users_count\": {\n      \"cardinality\": {\n        \"field\": \"user_pebblekraft_company_id\"\n      }\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "products per session",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"size\": 0,\n  \"query\": {\n    \"term\": {\n        \"user_pebblekraft_product_visited_company_id\": 12\n    }\n  },\n  \"aggs\": {\n    \"pages_per_session_count\": {\n      \"cardinality\": {\n        \"field\": \"user_pebblekraft_product_visited_id\"\n      }\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "top seen products",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                },\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_product_visited_id\"\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"top_seen_products\": {\n            \"terms\": {\n                \"field\": \"user_pebblekraft_product_visited_id\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            },\n            \"aggs\": {\n                \"get_top_hits_document\": {\n                    \"top_hits\": {\n                        \"_source\": {\n                            \"includes\": [\n                                \"user_pebblekraft_product_visited_id\",\n                                \"user_pebblekraft_product_visited_name\"\n                            ]\n                        },\n                        \"size\": 1\n                    }\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get browsers",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                {\n                    \"exists\": {\n                        \"field\": \"user_agent_name\"\n                    }\n                },\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"groub_by_browsers\": {\n            \"terms\": {\n                \"field\": \"user_agent_name.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get devices",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                {\n                    \"exists\": {\n                        \"field\": \"user_agent_device_category\"\n                    }\n                },\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"groub_by_browsers\": {\n            \"terms\": {\n                \"field\": \"user_agent_device_category.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get os",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                {\n                    \"exists\": {\n                        \"field\": \"user_agent_os_vendor\"\n                    }\n                },\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"groub_by_browsers\": {\n            \"terms\": {\n                \"field\": \"user_agent_os_vendor.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get active users in last 30minutes",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"filter\": [\n                {\n                    \"range\": {\n                        \"@timestamp\": {\n                            \"gte\": \"now-30m\"\n                        }\n                    }\n                },\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"distinct_users_count\": {\n            \"cardinality\": {\n                \"field\": \"user_pebblekraft_company_id\"\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get most popular countries",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                {\n                    \"exists\": {\n                        \"field\": \"country\"\n                    }\n                },\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"pages_per_session_count\": {\n            \"terms\": {\n                \"field\": \"country.keyword\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all seen products",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"filter\": [\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_company_id\"\n                    }\n                },\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_product_visited_id\"\n                    }\n                },\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_product_visited_company_id\"\n                    }\n                },\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"group_by_product_id\": {\n            \"terms\": {\n                \"field\": \"user_pebblekraft_product_visited_id\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            },\n            \"aggs\": {\n                \"get_top_hits_document\": {\n                    \"top_hits\": {\n                        \"_source\": {\n                            \"includes\": [\n                                \"user_pebblekraft_product_visited_id\",\n                                \"user_pebblekraft_product_visited_name\"\n                            ]\n                        },\n                        \"size\": 1\n                    }\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get top companies seeing my products",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"size\": 0,\n    \"query\": {\n        \"bool\": {\n            \"must\": [\n                {\n                    \"term\": {\n                        \"user_pebblekraft_product_visited_company_id\": 12\n                    }\n                },\n                {\n                    \"exists\": {\n                        \"field\": \"user_pebblekraft_product_visited_id\"\n                    }\n                }\n            ]\n        }\n    },\n    \"aggs\": {\n        \"top_seen_products\": {\n            \"terms\": {\n                \"field\": \"user_pebblekraft_company_id\",\n                \"order\": {\n                    \"_count\": \"desc\"\n                }\n            },\n            \"aggs\": {\n                \"get_top_hits_document\": {\n                    \"top_hits\": {\n                        \"_source\": {\n                            \"includes\": [\n                                \"user_pebblekraft_company_id\",\n                                \"user_pebblekraft_company_name\"\n                            ]\n                        },\n                        \"size\": 1\n                    }\n                }\n            }\n        }\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_search",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "user activity over time",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "product specific",
+					"item": [
+						{
+							"name": "get product scroll depth",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get product time spent",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get total sessions",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n        \"filter\": [\n        {\n            \"exists\": {\n            \"field\": \"user_pebblekraft_user_id\"\n            }\n        },\n        {\n            \"exists\": {\n            \"field\": \"user_pebblekraft_product_visited_id\"\n            }\n        }\n        ],\n        \"must\": [\n            {\n                \"match\": {\n                    \"user_pebblekraft_product_visited_company_id\": 1\n            }\n            }\n        ]\n    }\n  }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:9200/user_tracking/_count",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9200",
+									"path": [
+										"user_tracking",
+										"_count"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get distinct users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get browsers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get devices",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get os",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get active users in last 30minutes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get most popular countries",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get list of companies seeing my product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "user activity over time",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						},
+						{
+							"name": "get top companies seeing this product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": null
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "mapping for user_tracking index",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9200/user_tracking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9200",
+					"path": [
+						"user_tracking"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
